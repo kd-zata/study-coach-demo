@@ -1,0 +1,308 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>AI Study Coach Demo (MSLQ + MARSI)</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <style>
+    :root{--bg:#0f172a;--card:#111827;--ink:#e5e7eb;--muted:#9ca3af;--accent:#22c55e;}
+    body{margin:0;background:linear-gradient(180deg,#0b1023,#0f172a);font:16px/1.5 system-ui,Segoe UI,Roboto;color:var(--ink);}
+    .wrap{max-width:920px;margin:40px auto;padding:0 16px;}
+    .hero{display:flex;flex-wrap:wrap;gap:16px;align-items:center;justify-content:space-between}
+    .card{background:rgba(17,24,39,.7);border:1px solid #1f2937;border-radius:14px;padding:20px;backdrop-filter: blur(6px);}
+    h1{font-size:clamp(24px,4vw,36px);margin:.2rem 0 0.6rem}
+    .muted{color:var(--muted)}
+    .grid{display:grid;grid-template-columns:1fr;gap:16px}
+    @media(min-width:900px){.grid{grid-template-columns:1fr 1fr}}
+    label{display:block;margin:.6rem 0 .25rem;font-weight:600}
+    .q{margin:.8rem 0;padding:.8rem;border-radius:10px;background:#0b1222;border:1px solid #1f2845}
+    .scale{display:flex;gap:10px;flex-wrap:wrap;margin-top:.4rem}
+    .scale input{accent-color:#16a34a}
+    .btn{display:inline-block;background:var(--accent);color:#052010;font-weight:700;border:0;padding:.8rem 1rem;border-radius:10px;cursor:pointer}
+    .btn.secondary{background:#0ea5e9;color:#072436}
+    .hidden{display:none}
+    .tag{display:inline-block;background:#0a1a34;border:1px solid #1b3b6b;color:#a3e3ff;padding:.2rem .45rem;border-radius:999px;margin:.15rem .3rem 0 0;font-size:.8rem}
+    .plan ul{margin:.2rem 0 .8rem 1.1rem}
+    code.small{font-size:12px}
+    a{color:#86efac}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="hero card">
+      <div>
+        <h1>AI Study Coach (MSLQ + MARSI) — Demo</h1>
+        <p class="muted">Answer a short screen; get a personalized, research‑backed plan: retrieval, spacing, interleaving, worked examples, self‑explanation, and smarter reading.</p>
+      </div>
+      <div><button id="startBtn" class="btn">Start (5–7 minutes)</button></div>
+    </div>
+
+    <form id="form" class="hidden">
+      <div class="card">
+        <h2>About the demo</h2>
+        <p class="muted">
+          This prototype uses a <em>subset</em> of items from MSLQ (motivation & strategies) and MARSI (reading strategies). 
+          For production, replace with full instruments and official scoring from the MSLQ manual / MARSI rubric.<br>
+          <code class="small">MSLQ scoring & manual (Pintrich et al.) • MARSI instrument & scoring (Mokhtari & Reichard)</code>
+        </p>
+      </div>
+
+      <div class="grid">
+        <div class="card">
+          <h3>MSLQ — Motivation & Strategies</h3>
+          <p class="muted">Likert 1–7 (1 = not at all true of me, 7 = very true of me).</p>
+
+          <!-- Time & Study Environment (TSE) -->
+          <div class="q">
+            <label>1) I make good use of my study time.</label>
+            <div class="scale" data-key="MSLQ_TSE"></div>
+          </div>
+          <div class="q">
+            <label>2) I find a place to study where I can avoid distractions.</label>
+            <div class="scale" data-key="MSLQ_TSE"></div>
+          </div>
+          <div class="q">
+            <label>3) I schedule my study time to avoid last‑minute cramming.</label>
+            <div class="scale" data-key="MSLQ_TSE"></div>
+          </div>
+
+          <!-- Metacognitive Self‑Regulation (MSR) -->
+          <div class="q">
+            <label>4) I ask myself questions to make sure I understand the material.</label>
+            <div class="scale" data-key="MSLQ_MSR"></div>
+          </div>
+          <div class="q">
+            <label>5) I try to change the way I study to fit the course material.</label>
+            <div class="scale" data-key="MSLQ_MSR"></div>
+          </div>
+          <div class="q">
+            <label>6) When I get confused, I go back and try to figure it out.</label>
+            <div class="scale" data-key="MSLQ_MSR"></div>
+          </div>
+
+          <!-- Test Anxiety (TA) -->
+          <div class="q">
+            <label>7) I feel my heart beating fast when I take important tests. (reverse)</label>
+            <div class="scale" data-key="MSLQ_TA" data-reverse="true"></div>
+          </div>
+          <div class="q">
+            <label>8) I worry a great deal about tests. (reverse)</label>
+            <div class="scale" data-key="MSLQ_TA" data-reverse="true"></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>MARSI — Reading Strategies</h3>
+          <p class="muted">Likert 1–5 (1 = never, 5 = always / almost always).</p>
+
+          <!-- Global (GLOB) -->
+          <div class="q">
+            <label>9) Before reading, I preview headings/figures to set a purpose.</label>
+            <div class="scale" data-key="MARSI_GLOB" data-max="5"></div>
+          </div>
+          <div class="q">
+            <label>10) I think about what I already know to connect with the text.</label>
+            <div class="scale" data-key="MARSI_GLOB" data-max="5"></div>
+          </div>
+
+          <!-- Problem‑Solving (PROB) -->
+          <div class="q">
+            <label>11) When the text gets difficult, I slow down and re‑read.</label>
+            <div class="scale" data-key="MARSI_PROB" data-max="5"></div>
+          </div>
+          <div class="q">
+            <label>12) I adjust my reading speed depending on the difficulty.</label>
+            <div class="scale" data-key="MARSI_PROB" data-max="5"></div>
+          </div>
+
+          <!-- Support (SUP) -->
+          <div class="q">
+            <label>13) I summarize or take notes after a section.</label>
+            <div class="scale" data-key="MARSI_SUP" data-max="5"></div>
+          </div>
+          <div class="q">
+            <label>14) I make diagrams/tables to organize what I read.</label>
+            <div class="scale" data-key="MARSI_SUP" data-max="5"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <button class="btn" type="submit">Get my plan</button>
+        <button class="btn secondary" type="button" id="resetBtn">Reset</button>
+      </div>
+    </form>
+
+    <div id="results" class="hidden">
+      <div class="card">
+        <h2>Your Profile</h2>
+        <div id="tags"></div>
+        <p class="muted">Scores are quick averages for this demo (not normed). For production, compute official subscales and compare to local percentiles.</p>
+      </div>
+
+      <div class="card plan">
+        <h2>Your Research‑Backed Plan</h2>
+        <div id="plan"></div>
+        <p class="muted">Key evidence: retrieval beats restudy; spacing helps long‑term retention; interleaving improves transfer; worked examples accelerate early learning; self‑explanation deepens understanding; MARSI strategies improve academic reading. [3](https://www.rcsj.edu/Tutoring-site/Gloucester-site/Documents/Metacognitive%20Awareness%20Inventory.pdf)[4](https://link.springer.com/article/10.1007/s11251-007-9015-8)[5](https://www.researchgate.net/profile/Damir-Tomic/publication/371633359_Exploring_the_VARK_model_a_review_of_the_validity_and_reliability_of_the_questionnaire_and_its_relationship_to_learning_outcomes/links/648ca9358de7ed28ba308aa7/Exploring-the-VARK-model-a-review-of-the-validity-and-reliability-of-the-questionnaire-and-its-relationship-to-learning-outcomes.pdf?origin=publication_detail)[7](https://studylib.net/doc/27410032/a-manual-for-the-use-of-themotivated-strategies-for-learn...)[8](https://www.studocu.com/en-ca/document/concordia-university/concordia-university/lassi-student-report-learning-study-strategies-analysis/144010945)[2](https://www.jstor.org/stable/23359208)</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ---------- tiny UI helpers ----------
+    const $ = sel => document.querySelector(sel);
+    const $$ = sel => Array.from(document.querySelectorAll(sel));
+
+    // Render Likert radios for each .scale div
+    function renderLikert() {
+      $$(".scale").forEach(div => {
+        const max = Number(div.dataset.max || 7);
+        const name = crypto.randomUUID(); // unique per item
+        for (let i=1;i<=max;i++){
+          const id = name+"_"+i;
+          const r = document.createElement("input");
+          r.type="radio"; r.name=name; r.id=id; r.value=String(i);
+          const l = document.createElement("label");
+          l.setAttribute("for",id); l.style.fontWeight="400"; l.style.color="#cbd5e1";
+          l.textContent=String(i);
+          div.append(r,l);
+        }
+      });
+    }
+
+    // Collect responses and compute subscales (simple demo means)
+    function score() {
+      const buckets = {
+        MSLQ_TSE: [], MSLQ_MSR: [], MSLQ_TA: [],
+        MARSI_GLOB: [], MARSI_PROB: [], MARSI_SUP: []
+      };
+      $$(".scale").forEach(div=>{
+        const key = div.dataset.key;
+        const max = Number(div.dataset.max || 7);
+        const reverse = div.dataset.reverse === "true";
+        const checked = div.querySelector("input[type=radio]:checked");
+        if(!checked) return;
+        let v = Number(checked.value);
+        if(reverse){ v = (max+1) - v; } // simple reverse
+        buckets[key].push(v);
+      });
+      const mean = arr => arr.length? (arr.reduce((a,b)=>a+b,0)/arr.length) : null;
+      const scores = {};
+      Object.entries(buckets).forEach(([k,arr])=> scores[k] = mean(arr));
+
+      return scores;
+    }
+
+    // Turn scores -> tags and plan
+    function prescribe(scores){
+      const tags = [];
+      const plan = [];
+
+      function tag(name,val){ if(val!=null) tags.push(`${name}: ${val.toFixed(2)}`); }
+
+      tag("Time & Study Env", scores.MSLQ_TSE);
+      tag("Metacog Self‑Reg", scores.MSLQ_MSR);
+      tag("Test Anxiety (rev.)", scores.MSLQ_TA);
+      tag("Reading‑Global", scores.MARSI_GLOB);
+      tag("Reading‑ProblemSolving", scores.MARSI_PROB);
+      tag("Reading‑Support", scores.MARSI_SUP);
+
+      // Thresholds for demo (tune later)
+      const low = (v,cut)=> v!=null && v<cut;
+
+      // --- Core study prescriptions (evidence‑based) ---
+      // Retrieval + spacing always included
+      plan.push(`<h3>Daily Core</h3>
+        <ul>
+          <li><strong>Retrieval practice</strong>: 5–10 min end‑of‑session self‑quiz (free recall / short Qs). (Testing effect) [3](https://www.rcsj.edu/Tutoring-site/Gloucester-site/Documents/Metacognitive%20Awareness%20Inventory.pdf)</li>
+          <li><strong>Spaced reviews</strong>: revisit after 1, 3, 7, 21 days; schedule with calendar reminders. (Spacing effect) [4](https://link.springer.com/article/10.1007/s11251-007-9015-8)</li>
+        </ul>`);
+
+      // Time & Study Environment
+      if (low(scores.MSLQ_TSE, 4.0)){
+        plan.push(`<h3>Time & Study Environment</h3>
+          <ul>
+            <li>Protect 1–2 × 25–50‑min focus blocks/day; phone in another room.</li>
+            <li>Pre‑plan the week; place spaced sessions for each topic (1/3/7/21‑day cadence). [4](https://link.springer.com/article/10.1007/s11251-007-9015-8)</li>
+          </ul>`);
+      }
+
+      // Metacognitive Self‑Regulation
+      if (low(scores.MSLQ_MSR, 4.0)){
+        plan.push(`<h3>Metacognitive Skills</h3>
+          <ul>
+            <li>Add <strong>self‑explanation</strong> prompts after examples/sections: “Why does this step follow?” “Which principle applies?” [8](https://www.studocu.com/en-ca/document/concordia-university/concordia-university/lassi-student-report-learning-study-strategies-analysis/144010945)</li>
+            <li>Keep a tiny <em>error log</em>: note the error, the fix, and a cue for next time.</li>
+          </ul>`);
+      }
+
+      // Anxiety
+      if (low(scores.MSLQ_TA, 4.0)){
+        plan.push(`<h3>Test Confidence</h3>
+          <ul>
+            <li>Use frequent <strong>low‑stakes quizzes</strong> to normalize recall under timing. [3](https://www.rcsj.edu/Tutoring-site/Gloucester-site/Documents/Metacognitive%20Awareness%20Inventory.pdf)</li>
+            <li>Short, intentional breaks (2–3 min) to reset attention; then resume. [10](https://eric.ed.gov/?id=EJ388055)</li>
+          </ul>`);
+      }
+
+      // Reading strategies
+      if (low(scores.MARSI_GLOB, 3.6)){
+        plan.push(`<h3>Reading — Global Strategy</h3>
+          <ul>
+            <li><strong>Preview & purpose</strong> before each chapter; link to prior knowledge. (MARSI Global) [2](https://www.jstor.org/stable/23359208)</li>
+          </ul>`);
+      }
+      if (low(scores.MARSI_PROB, 3.6)){
+        plan.push(`<h3>Reading — Problem‑Solving</h3>
+          <ul>
+            <li>When text is difficult: slow down, re‑read, infer from context; adjust reading speed. (MARSI PROB) [2](https://www.jstor.org/stable/23359208)</li>
+          </ul>`);
+      }
+      if (low(scores.MARSI_SUP, 3.6)){
+        plan.push(`<h3>Reading — Support</h3>
+          <ul>
+            <li>After each section: <strong>summarize</strong> in your own words and sketch a diagram/table. (MARSI SUP) [2](https://www.jstor.org/stable/23359208)</li>
+          </ul>`);
+      }
+
+      // Skill acquisition (universal)
+      plan.push(`<h3>Practice Design</h3>
+        <ul>
+          <li>Start with <strong>worked examples</strong> → then “fade” steps and solve yourself. [7](https://studylib.net/doc/27410032/a-manual-for-the-use-of-themotivated-strategies-for-learn...)</li>
+          <li>Use <strong>interleaved</strong> mixed sets (A/B/C…) once basics are in place to improve method selection. [5](https://www.researchgate.net/profile/Damir-Tomic/publication/371633359_Exploring_the_VARK_model_a_review_of_the_validity_and_reliability_of_the_questionnaire_and_its_relationship_to_learning_outcomes/links/648ca9358de7ed28ba308aa7/Exploring-the-VARK-model-a-review-of-the-validity-and-reliability-of-the-questionnaire-and-its-relationship-to-learning-outcomes.pdf?origin=publication_detail)</li>
+        </ul>`);
+
+      return {tags, plan: plan.join("")};
+    }
+
+    // ---------- wire it up ----------
+    $("#startBtn").addEventListener("click", ()=>{
+      $("#startBtn").closest(".hero").classList.add("hidden");
+      $("#form").classList.remove("hidden");
+      renderLikert();
+    });
+
+    $("#resetBtn").addEventListener("click", ()=>{
+      location.reload();
+    });
+
+    $("#form").addEventListener("submit", (e)=>{
+      e.preventDefault();
+      const scores = score();
+      const out = prescribe(scores);
+
+      // render tags
+      const tagBox = $("#tags"); tagBox.innerHTML="";
+      out.tags.forEach(t=>{
+        const el = document.createElement("span");
+        el.className = "tag"; el.textContent = t; tagBox.appendChild(el);
+      });
+      $("#plan").innerHTML = out.plan;
+
+      $("#form").classList.add("hidden");
+      $("#results").classList.remove("hidden");
+      window.scrollTo({top:0,behavior:"smooth"});
+    });
+  </script>
+</body>
+</html>
